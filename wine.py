@@ -11,10 +11,9 @@ Y = data[:,-1]
 
 print("X and Y shapes =", X.shape, Y.shape)
 
-model == nn.train(X, Y)
-_, accuracy = model.evaluate(X, Y)
+results, estimator = nn.train(X, Y)
 
-print('Accuracy: %.2f' % (accuracy*100))
+print(results)
 
 
 """
