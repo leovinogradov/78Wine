@@ -21,7 +21,14 @@ def train(X, Y, epochs=100, nSplits=5):
     print("\nStarting training...")
     estimator = KerasRegressor(build_fn=baseline_model, epochs=epochs, batch_size=5, verbose=0)
     kfold = KFold(n_splits=nSplits)
-    results = cross_val_score(estimator, X, Y, cv=kfold)
+
+    # cv: int, cross-validation generator or an iterable
+    # n_jobs: int or None, optional (default=None)
+    #   The number of CPUs to use to do the computation.
+    #   None means 1 unless in a joblib.parallel_backend context.
+    #   -1 means using all processors. See Glossary for more details.
+    results = cross_val_score(estimator, X, Y, cv=kfold, scoring='neg_root_mean_squared_error', n_jobs=-1)
+
     print("\nEnded training.")
-    print("Baseline: Mean = %.2f Std = %.2f MSE" % (results.mean(), results.std()))
+    print("neg_root_mean_squared_error: Mean = %.2f Std = %.2f" % (results.mean(), results.std()))
     return (results, estimator,)
