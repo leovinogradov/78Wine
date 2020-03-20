@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import asarray as arr
 from numpy import atleast_2d as twod
+import matplotlib.pyplot as plt
 
 def splitData(X, Y=None, train_fraction=0.80):
     """
@@ -39,3 +40,26 @@ def splitData(X, Y=None, train_fraction=0.80):
 
 def mse(A, B, ax=None):
     return (np.square(A - B)).mean(axis=ax)
+
+# --- Just a test, does not work ---
+curr_pos = 0
+def showMultipagePlot(figs, axs):
+    def key_event(e):
+        global curr_pos
+
+        if e.key == "right":
+            curr_pos = curr_pos + 1
+        elif e.key == "left":
+            curr_pos = curr_pos - 1
+        else:
+            return
+        curr_pos = curr_pos % 2
+
+        axs[curr_pos].cla()
+        # ax.plot(plots[curr_pos][0], plots[curr_pos][1])
+        figs[curr_pos].canvas.draw()
+
+    figs[curr_pos].canvas.mpl_connect('key_press_event', key_event)
+    # ax = fig.add_subplot(111)
+    # ax.plot(t,y1)
+    plt.show()

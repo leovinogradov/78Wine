@@ -3,25 +3,50 @@ import numpy as np
 import nn
 import utils
 
-data = np.array(pd.read_csv("./winequality-red.csv", sep=';'));
-X = data[:,0:-1]
-Y = data[:,-1]
+def runTests(X, Y):
+    Xtr, Xte, Ytr, Yte = utils.splitData(X, Y, 0.9);
+
+    print("X and Y shapes =", X.shape, Y.shape)
+
+    results, estimator = nn.train(Xtr, Ytr)
+
+    print(results)
+
+    estimator.fit(Xtr, Ytr)
+    Yhat = estimator.predict(Xte)
+
+    mse = utils.mse(Yte, Yhat)
+
+    print("mse on testing data is", mse)
+
+    return (results, mse,)
 
 
-Xtr, Xte, Ytr, Yte = utils.splitData(X, Y, 0.9);
 
-print("X and Y shapes =", X.shape, Y.shape)
+data_red = np.array(pd.read_csv("./winequality-red.csv", sep=';'));
+X_red = data_red[:,0:-1]
+Y_red = data_red[:,-1]
 
-results, estimator = nn.train(Xtr, Ytr)
+cross_val_red, mse_red = runTests(X_red, Y_red)
 
-print(results)
 
-estimator.fit(Xtr, Ytr)
-Yhat = estimator.predict(Xte)
 
-mse = utils.mse(Yte, Yhat)
+data_white = np.array(pd.read_csv("./winequality-white.csv", sep=';'));
+X_white = data_white[:,0:-1]
+Y_white = data_white[:,-1]
 
-print("mse on testing data is", mse)
+cross_val_white, mse_white = runTests(X_white, Y_white)
+
+
+print("\n\nResults:\n\n")
+
+print("Red Wine:")
+print(cross_val_red)
+print(mse_red)
+print()
+print("White Wine:")
+print(cross_val_white)
+print(mse_white)
 
 """
 BEST RESULTS SO FAR:
@@ -29,26 +54,5 @@ BEST RESULTS SO FAR:
 neg_root_mean_squared_error: Mean = -0.67 Std = 0.02
 
 mse on testing data is 0.524910799519418
-
-"""
-
-from multiprocessing import Pool
-import yourFunctionDefs
-
-numProcesses = 3 # or however many you need
-
-p = Pool(processes=numProcesses)
-results = []
-
-for i in range(numProcesses):
-    res = p.apply_async(yourFunctionDefs.yourFunc, (arg_a, arg_b, etc, i)) # call your training function with your arguments
-    results.append(res)
-    print("started getting result for", i)
-
-for j, res in enumerate(results):
-    result = res.get() # get results asynchronously
-    print("got result", result)
-
-p.close()
 
 """
